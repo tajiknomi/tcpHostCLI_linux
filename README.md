@@ -10,13 +10,13 @@ Download the latest version from the release section
 ## How to build
 1: CMake
 ```
-cd tcpHostCLI_linux/build
+cd tcpHostCLI_linux && mkdir build && cd build
 cmake -DTARGET_ARCH=x86 ../ && make    //  for 32-bit version
 cmake -DTARGET_ARCH=x64 ../ && make    // for 64-bit version
 ```
 2: Using g++
 ```
-cd tcpHostCLI_linux
+cd tcpHostCLI_linux && mkdir build
 g++ -std=c++17 -pthread -I include/ -m32 src/*.cpp -o build/tcpHost_x86    // for 32-bit version
 g++ -std=c++17 -pthread -I include/ -m64 src/*.cpp -o build/tcpHost_x64    // for 64-bit version
 ```
