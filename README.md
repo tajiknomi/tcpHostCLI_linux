@@ -10,7 +10,7 @@ Download the latest version from the release section
 ## How to build
 1: CMake
 ```
-cd build
+cd tcpHostCLI_linux/build
 cmake -DTARGET_ARCH=x86 ../ && make    //  for 32-bit version
 cmake -DTARGET_ARCH=x64 ../ && make    // for 64-bit version
 ```
