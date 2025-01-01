@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.5)
 
-project(TCPServerCLI)
+project(tcpHostCLI)
 
 # Set default architecture if not specified
 if(NOT DEFINED TARGET_ARCH)
@@ -45,16 +45,16 @@ set(HEADERS
 )
 
 # Create the executable (using only source files)
-add_executable(TCPServerCLI ${SOURCES})
+add_executable(tcpHostCLI ${SOURCES})
 
 # Set the C++17 standard
-target_compile_features(TCPServerCLI PRIVATE cxx_std_17)
+target_compile_features(tcpHostCLI PRIVATE cxx_std_17)
 
 # Include the header directory
-target_include_directories(TCPServerCLI PRIVATE ${HEADER_DIR})
+target_include_directories(tcpHostCLI PRIVATE ${HEADER_DIR})
 
 # Link the pthread library
-target_link_libraries(TCPServerCLI PRIVATE pthread)
+target_link_libraries(tcpHostCLI PRIVATE pthread)
 
 # Set linker flags to disable symbol generation
-set_target_properties(TCPServerCLI PROPERTIES LINK_FLAGS_RELEASE "-s")
+set_target_properties(tcpHostCLI PROPERTIES LINK_FLAGS_RELEASE "-s")
