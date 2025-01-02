@@ -1,5 +1,5 @@
 ## What problem does it solve?
-nc excels at reverse connections but couldn't handle multiple connections on single port/terminal. This tool offers a more efficient way to manage and switch between numerous sessions or clients using a single port and terminal.
+nc excels at reverse connections but couldn't handle multiple connections on single port/terminal. This tool offers a more convenient way to manage and switch between numerous sessions/clients using a single port and terminal.
 This simplifies the handling of multiple connections.
 
 ## Quick Start
