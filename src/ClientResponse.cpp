@@ -27,6 +27,7 @@
 #include <cstring>
 #include <thread>
 #include <chrono>
+#include "signalManager.h"
 
 #define INVALID_SOCKET -1
 
@@ -47,6 +48,7 @@ int get_max_fd(fd_set* read_fds) {
 
 void ClientResponse_t(std::shared_ptr<ClientsManager> clientManager_ptr) {
 
+    blockSIGINT(); // Block SIGINT for this thread
 	timeval m_timeInterval;
 	m_timeInterval.tv_sec = 0;
 	m_timeInterval.tv_usec = 400000; // The maximum time for select(..) to wait
@@ -62,7 +64,7 @@ void ClientResponse_t(std::shared_ptr<ClientsManager> clientManager_ptr) {
 		}
         fd_set temp_fds = clientManager_ptr->m_readFds; // Copy the set
         int m_receivingStatus = select(max_fd + 1, &temp_fds, NULL, NULL, &m_timeInterval);
-           
+
 		if (m_receivingStatus == 0) {				// No socket active to read
             max_fd = get_max_fd(&clientManager_ptr->m_readFds);
 			continue;
@@ -72,22 +74,22 @@ void ClientResponse_t(std::shared_ptr<ClientsManager> clientManager_ptr) {
 		if ((clientManager_ptr->getActiveClientSocket() > 0) && FD_ISSET(clientManager_ptr->getActiveClientSocket(), &temp_fds)) {
 			int nDataLength = ::recv(clientManager_ptr->getActiveClientSocket(), recv_buf, RecieveBuffLength, 0);
 			if (nDataLength == 0) {
-                //std::cerr << "gracefully closed!";
+            //    std::cerr << "gracefully closed!";
 				clientManager_ptr->clientDisconnected();
 			}
             else if(nDataLength == -1 && errno == ECONNRESET){
-                //std::cerr << "forcefully closed!";
+            //    std::cerr << "forcefully closed!";
                 clientManager_ptr->clientDisconnected();   
             }
             else if(nDataLength == -1 && errno == EBADF){
-                //std::cerr << "disconnected from server side!";
+            //    std::cerr << "disconnected from server side!";
                 clientManager_ptr->clientDisconnected();
-            }
+            }         
 		}
 
         // Rebuild the fd_set
         FD_ZERO(&clientManager_ptr->m_readFds);
-        for (unsigned int i = 0; i < clientManager_ptr->MaxNumOfClientsSupported; ++i) {
+        for (unsigned int i = 0; i < clientManager_ptr->MaxNumberOfSessionsSupported; ++i) {
             int clientSocket = clientManager_ptr->getClientSocket(i);
             if (clientSocket != INVALID_SOCKET) {
                 FD_SET(clientSocket, &clientManager_ptr->m_readFds);

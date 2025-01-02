@@ -25,7 +25,7 @@
 
 std::vector<std::string> ClientsManager::extractValidClients() {
 	std::vector<std::string> tmp;
-	for (unsigned int i = 0; i < MaxNumOfClientsSupported; ++i) {
+	for (unsigned int i = 0; i < MaxNumberOfSessionsSupported; ++i) {
 		if (clientSockets[i] != INVALID_SOCKET) {
 			tmp.push_back(std::to_string(i));
 		}
@@ -59,8 +59,8 @@ void ClientsManager::clientConnected(void) {
 }
 
 SOCKET_FD ClientsManager::getClientSocket(const unsigned int& id) {	
-	if (id >= MaxNumOfClientsSupported) {
-		std::cout << "Selected client should be within range of 0 - " << MaxNumOfClientsSupported << std::endl;
+	if (id >= MaxNumberOfSessionsSupported) {
+		std::cout << "Selected client should be within range of 0 - " << MaxNumberOfSessionsSupported << std::endl;
 		return INVALID_SOCKET;
 	}
 	return clientSockets[id];
@@ -81,8 +81,8 @@ void ClientsManager::clientDisconnected(void) {
 
 void ClientsManager::setActiveClient(const int& id)
 {
-	if (id >= MaxNumOfClientsSupported) {
-		std::cout << "Selected client should be within range of 0 - " << MaxNumOfClientsSupported << std::endl;
+	if (id >= MaxNumberOfSessionsSupported) {
+		std::cout << "Selected client should be within range of 0 - " << MaxNumberOfSessionsSupported << std::endl;
 		return;
 	}
 	else if ((getClientSocket(id) == INVALID_SOCKET) || (clientSockets[id] == INVALID_SOCKET)) {

@@ -23,12 +23,14 @@
 #include <iostream>
 #include "ClientResponse.h"
 #include <string>
+#include "signalManager.h"
 
 #define NumberOfArgs	2
 
 
-
 int main(int argc, char* argv[]) {
+
+	std::signal(SIGINT, signalHandler);	
 
 	if (argc != NumberOfArgs) {
 		std::cerr << "Usage: " << argv[0] << " <port_number>\n";
@@ -42,9 +44,6 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	const std::string server_ip("0.0.0.0");
-	std::cout << "Listening on " << server_ip << ":" << port_num << std::endl;
-
 	/* Create a tcp object */
 	linuxSocket tcp;
 
@@ -52,9 +51,12 @@ int main(int argc, char* argv[]) {
 	tcp.socket_init();
 
 	/* Listen on <port_num> */
+	const std::string server_ip("0.0.0.0");
 	tcp.listen(server_ip.c_str(), port_num.c_str());
+	std::cout << "Listening on " << server_ip << ":" << port_num << std::endl;
 
 	/* Close socket */
 	tcp.socket_cleanup();
+
 	return 0;
 }

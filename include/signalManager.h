@@ -19,42 +19,12 @@
 // SOFTWARE. 
 
 
+#include <csignal>
+
 #pragma once
 
+// Signal handler
+void signalHandler(int signum);
 
-#include <vector>
-#include <mutex>
-#include <iostream>
-
-
-#define INVALID_SOCKET -1
-typedef int SOCKET_FD;
-
-class ClientsManager {
-
-private:
-	std::mutex mtx;
-	unsigned int clientSelected;
-	unsigned int activeClientCount;
-	std::vector<SOCKET_FD> clientSockets;
-
-public:
-	static const unsigned int MaxNumberOfSessionsSupported{ 500 };
-	fd_set m_readFds;
-	int fd_count;
-	
-	// CONSTRUCTOR
-	ClientsManager() : clientSockets(MaxNumberOfSessionsSupported, INVALID_SOCKET), clientSelected(0), activeClientCount(0) { FD_ZERO(&m_readFds); };
-
-public:		// Public Methods	
-	unsigned int getActiveClientsCount(void);
-	SOCKET_FD getClientSocket(const unsigned int& clientID);
-	unsigned int getActiveClientID(void);
-	SOCKET_FD getActiveClientSocket(void);
-	void setActiveClient(const int& clientID);
-	void setClientSocket(const unsigned int& clientID, const int& value);	
-	void clientConnected(void);
-	void clientDisconnected(void);
-	std::vector<std::string> extractValidClients();
-	void printValidClients();
-};
+// Function to block SIGINT in a thread
+void blockSIGINT();

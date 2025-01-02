@@ -19,42 +19,21 @@
 // SOFTWARE. 
 
 
-#pragma once
-
-
-#include <vector>
-#include <mutex>
+#include "signalManager.h"
 #include <iostream>
 
+// Signal handler: This handler is only available for main thread and interrupt signal is blocked in other threads
+void signalHandler(int signum) {
+    std::cout << std::endl << "1. To send Ctrl+C to the client, type \"!ctrlc\"" << std::endl
+            << "2. To exit the program (and close all sessions), type '!quit'" << std::endl
+            << "3. For help menu, type \"!\"" << std::endl
+            << std::flush;
+}
 
-#define INVALID_SOCKET -1
-typedef int SOCKET_FD;
-
-class ClientsManager {
-
-private:
-	std::mutex mtx;
-	unsigned int clientSelected;
-	unsigned int activeClientCount;
-	std::vector<SOCKET_FD> clientSockets;
-
-public:
-	static const unsigned int MaxNumberOfSessionsSupported{ 500 };
-	fd_set m_readFds;
-	int fd_count;
-	
-	// CONSTRUCTOR
-	ClientsManager() : clientSockets(MaxNumberOfSessionsSupported, INVALID_SOCKET), clientSelected(0), activeClientCount(0) { FD_ZERO(&m_readFds); };
-
-public:		// Public Methods	
-	unsigned int getActiveClientsCount(void);
-	SOCKET_FD getClientSocket(const unsigned int& clientID);
-	unsigned int getActiveClientID(void);
-	SOCKET_FD getActiveClientSocket(void);
-	void setActiveClient(const int& clientID);
-	void setClientSocket(const unsigned int& clientID, const int& value);	
-	void clientConnected(void);
-	void clientDisconnected(void);
-	std::vector<std::string> extractValidClients();
-	void printValidClients();
-};
+// Function to block SIGINT in a threadd
+void blockSIGINT() {
+    sigset_t signalSet;
+    sigemptyset(&signalSet);
+    sigaddset(&signalSet, SIGINT);
+    pthread_sigmask(SIG_BLOCK, &signalSet, nullptr);
+}

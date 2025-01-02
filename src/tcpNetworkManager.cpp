@@ -1,25 +1,3 @@
-// Copyright (c) Nouman Tajik [github.com/tajiknomi]
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE. 
-
-
-
 #include "tcpNetworkManager.h"
 #include "clientManager.h"
 #include "ServerQueries.h"
@@ -93,25 +71,14 @@ void linuxSocket::socket_init(){
     //return 0;
 }
 
-void linuxSocket::listen(const std::string &url, const std::string &port){
+void linuxSocket::listen(const std::string &ip, const std::string &port){
 
 	// This pointer will be shared with sending and recieving threads (i.e. ClientResponse and ServerQueries modules)
 	std::shared_ptr<ClientsManager> clientManager_ptr = std::make_shared<ClientsManager>();
 
-    /* Build the address. */
-    struct hostent *hostent = gethostbyname(url.c_str());
-    if (hostent == NULL) {
-        std::cerr << "error: gethostbyname(\"" << url << "\")" << std::endl;
-        //return -1;
-    }
-    in_addr_t in_addr = inet_addr(inet_ntoa(*(struct in_addr*)*(hostent->h_addr_list)));
-    if (in_addr == (in_addr_t)-1) {
-        std::cerr << "error: inet_addr(\"" << *(hostent->h_addr_list) << "\")" << std::endl;
-        //return -1;
-    }
     struct sockaddr_in sockaddr_in;
     const unsigned short server_port = std::stoi(port);
-    sockaddr_in.sin_addr.s_addr = in_addr;
+    sockaddr_in.sin_addr.s_addr = inet_addr(ip.c_str());
     sockaddr_in.sin_family = AF_INET;
     sockaddr_in.sin_port = htons(server_port);
 
@@ -120,6 +87,7 @@ void linuxSocket::listen(const std::string &url, const std::string &port){
 
     if(::bind(ListenSocket, (struct sockaddr*)&sockaddr_in, sizeof(struct sockaddr_in)) == -1){
         perror("bind");
+        exit(-1);
     }
 
     if(::listen(ListenSocket, SOMAXCONN) == -1){
@@ -133,16 +101,15 @@ void linuxSocket::listen(const std::string &url, const std::string &port){
     std::thread send_thread(ServerQueries_t, clientManager_ptr);					// A thread which send commands to client(s)
     std::thread recv_tread(ClientResponse_t, clientManager_ptr);					// A thread which recieves response/data from client(s) 
 
-    for (unsigned int ClientId = 0; ClientId < MaxNumberOfSessionsSupported; ++ClientId) {
+    for (unsigned int ClientId = 0; ClientId < ClientsManager::MaxNumberOfSessionsSupported; ++ClientId) {
         int newSocket = ::accept(ListenSocket, (struct sockaddr*)&sockaddr_out, &sockaddrlength);
         if(newSocket == -1){
             continue;
         }
-    //    FD_ZERO(&clientManager_ptr->m_readFds);             // DELETE THIS!!
         FD_SET(newSocket, &clientManager_ptr->m_readFds);
         clientManager_ptr->clientConnected();
         inet_ntop(AF_INET, &(sockaddr_out.sin_addr), clientIP, INET_ADDRSTRLEN);
-		std::cout << "====================== Client ID " << ClientId <<  ": "  << clientIP << " is connected ======================" << std::endl;
+		std::cout << "========== Client ID " << ClientId <<  ": "  << clientIP << " is connected ==========" << std::endl;
         clientManager_ptr->setClientSocket(ClientId, newSocket);
         newSocket = INVALID_SOCKET;
     }

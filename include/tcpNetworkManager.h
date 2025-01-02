@@ -26,7 +26,6 @@
 class linuxSocket{
     private:
         int ListenSocket;
-        const unsigned int MaxNumberOfSessionsSupported = 500;
         
     public:			/* Static function(s) */
 		    static bool isvalidatePort(const std::string& input);

