@@ -4,7 +4,7 @@ netcat is mostly used for reverse connection but it's limited to handling only o
 ## Quick Start
 Download the latest version from the release section
 ```
-$ ./tcpHostCLI <PORT>
+$ ./tcphost <PORT>
 ```
 
 ## How to build
