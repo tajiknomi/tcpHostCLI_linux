@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.5)
 
-project(tcpHostCLI)
+project(tcphost)
 
 # Set default architecture if not specified
 if(NOT DEFINED TARGET_ARCH)
@@ -33,6 +33,7 @@ set(SOURCES
     ${SOURCE_DIR}/clientManager.cpp
     ${SOURCE_DIR}/tcpNetworkManager.cpp
     ${SOURCE_DIR}/UsageHelper.cpp
+    ${SOURCE_DIR}/signalManager.cpp
 )
 
 # Optionally, add headers for IDEs or reference
@@ -42,19 +43,21 @@ set(HEADERS
     ${HEADER_DIR}/clientManager.h
     ${HEADER_DIR}/tcpNetworkManager.h
     ${HEADER_DIR}/UsageHelper.h
+    ${HEADER_DIR}/signalManager.h
+    
 )
 
 # Create the executable (using only source files)
-add_executable(tcpHostCLI ${SOURCES})
+add_executable(tcphost ${SOURCES})
 
 # Set the C++17 standard
-target_compile_features(tcpHostCLI PRIVATE cxx_std_17)
+target_compile_features(tcphost PRIVATE cxx_std_17)
 
 # Include the header directory
-target_include_directories(tcpHostCLI PRIVATE ${HEADER_DIR})
+target_include_directories(tcphost PRIVATE ${HEADER_DIR})
 
 # Link the pthread library
-target_link_libraries(tcpHostCLI PRIVATE pthread)
+target_link_libraries(tcphost PRIVATE pthread)
 
 # Set linker flags to disable symbol generation
-set_target_properties(tcpHostCLI PROPERTIES LINK_FLAGS_RELEASE "-s")
+set_target_properties(tcphost PROPERTIES LINK_FLAGS_RELEASE "-s")
