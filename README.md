@@ -17,8 +17,8 @@ $ cmake -DTARGET_ARCH=x64 ../ && make    // for 64-bit version
 2: Using g++
 ```
 $ cd tcpHostCLI_linux && mkdir build
-$ g++ -std=c++17 -pthread -I include/ -m32 src/*.cpp -o build/tcpHost_x86    // for 32-bit version
-$ g++ -std=c++17 -pthread -I include/ -m64 src/*.cpp -o build/tcpHost_x64    // for 64-bit version
+$ g++ -std=c++17 -pthread -I include/ -m32 src/*.cpp -o build/tcphost_x86    // for 32-bit version
+$ g++ -std=c++17 -pthread -I include/ -m64 src/*.cpp -o build/tcphost_x64    // for 64-bit version
 ```
 
 ## Screenshots
