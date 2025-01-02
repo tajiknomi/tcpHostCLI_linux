@@ -1,10 +1,43 @@
-## Intro
-netcat is mostly used for reverse connection but it's limited to handling only one connection at a time. This utility offers a more convenient way to manage multiple sessions/clients using a single port/terminal, allowing you to easily manage and switch b/w session/clients.
+## What problem does it solve?
+nc excels at reverse connections but couldn't handle multiple connections on single port/terminal. This tool offers a more efficient way to manage and switch between numerous sessions or clients using a single port and terminal.
+This simplifies the handling of multiple connections.
 
 ## Quick Start
-Download the latest version from the release section
+Download the latest version from the [release section](https://github.com/tajiknomi/tcpHostCLI_linux/releases)
 ```
 $ ./tcphost <PORT>
+```
+
+## Example of usage
+#### Show help menu
+```
+!
+```
+#### Show active session list
+```
+!list
+```
+#### If you want to switch b/w active sessions, e.g. switch to session 2
+```
+!2
+```
+#### Clear the terminal screen
+```
+!clear
+```
+#### Upgrade to tty
+```
+!tty py          // using python
+!tty py3         // using python3
+!tty perl        // using perl
+```
+#### Close the current session (i.e. disconnect from the current session/client)
+```
+!close
+```
+#### Quit the program
+```
+!quit
 ```
 
 ## How to build
@@ -21,6 +54,5 @@ $ g++ -std=c++17 -pthread -I include/ -m32 src/*.cpp -o build/tcphost_x86    // 
 $ g++ -std=c++17 -pthread -I include/ -m64 src/*.cpp -o build/tcphost_x64    // for 64-bit version
 ```
 
-## Screenshots
 
 
