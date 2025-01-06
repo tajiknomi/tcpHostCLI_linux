@@ -3,9 +3,9 @@ nc excels at reverse connections handling but couldn't handle multiple connectio
 This simplifies the handling of multiple connections.
 
 ## Quick Start
-Download the latest version from the [release section](https://github.com/tajiknomi/tcpHostCLI_linux/releases)
+Download the latest version from the [release section](https://github.com/tajiknomi/tcpHostCLI_linux/releases). For better experience, you can use [rlwrap](https://github.com/hanslub42/rlwrap) along with it
 ```
-$ ./tcphost <PORT>
+$ [rlwrap] ./tcphost <PORT>
 ```
 
 ## Example of usage
